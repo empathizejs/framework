@@ -1,6 +1,3 @@
-declare type ReadOptions = {
-    binary?: boolean;
-};
 declare type EntryStats = {
     type: 'file' | 'directory';
     size: number;
@@ -9,7 +6,7 @@ export default class fs {
     /**
      * Read file
      */
-    static read(file: string, options?: ReadOptions): Promise<string | ArrayBuffer>;
+    static read(file: string, binary?: boolean): Promise<string | ArrayBuffer>;
     /**
      * Write file
      */
@@ -27,7 +24,7 @@ export default class fs {
     /**
      * Remove file or directory
      */
-    static remove(path: string): Promise<void>;
+    static remove(file: string): Promise<void>;
     /**
      * Get list of filesystem entries inside a directory
      */
@@ -35,18 +32,18 @@ export default class fs {
     /**
      * Create folder
      */
-    static mkdir(path: string): Promise<void>;
+    static mkdir(directory: string): Promise<void>;
     /**
      * Copy file or directory
      *
      * @throws Error if the file or directory doesn't exist
      */
-    static copy(path: string, to: string): Promise<void>;
+    static copy(from: string, to: string): Promise<void>;
     /**
      * Move file or directory to the new location
      *
      * @throws Error if the file or directory doesn't exist
      */
-    static move(path: string, to: string): Promise<void>;
+    static move(from: string, to: string): Promise<void>;
 }
 export {};

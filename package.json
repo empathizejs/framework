@@ -14,7 +14,7 @@
   "scripts": {
     "build": "yarn build:pure && yarn build:types",
     "build:pure": "esbuild src/index.ts --bundle --minify --outdir=dist --splitting --platform=node --format=esm",
-    "build:types": "tsc --emitDeclarationOnly --declaration --target es2021 src/index.ts",
+    "build:types": "tsc --emitDeclarationOnly --declaration --target es2021 --outDir dist src/index.ts",
     "test": "yarn build && node test.js"
   },
   "devDependencies": {
