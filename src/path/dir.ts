@@ -1,5 +1,8 @@
 declare const Neutralino;
 
+declare const NL_CWD;
+declare const NL_PATH;
+
 export default class dir
 {
     protected static dirs = {
@@ -23,12 +26,19 @@ export default class dir
     }
 
     /**
+     * Current working directory
+     */
+    public static cwd: string = NL_CWD;
+
+    /**
+     * Application path
+     */
+    public static app: string = NL_PATH;
+
+    /**
      * System temp directory path
      */
-    public static get temp(): Promise<string>
-    {
-        return new Promise((resolve) => resolve('/tmp'));
-    }
+    public static temp: string = '/tmp';
 
     /**
      * System data directory path

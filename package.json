@@ -12,10 +12,13 @@
   "repository": "https://github.com/empathy-framework/framework",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "yarn build:pure && yarn build:types",
+    "build:pure": "esbuild src/index.ts --bundle --minify --outdir=dist --splitting --platform=node --format=esm",
+    "build:types": "tsc --emitDeclarationOnly --declaration --target es2021 src/index.ts",
     "test": "yarn build && node test.js"
   },
   "devDependencies": {
+    "esbuild": "^0.14.11",
     "typescript": "^4.5.4"
   }
 }

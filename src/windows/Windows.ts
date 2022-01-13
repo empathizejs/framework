@@ -37,7 +37,7 @@ interface Window
     /**
      * Set window title
      */
-    setTitle(title: string): void;
+    setTitle(title: string): Promise<void>;
 
     /**
      * Get window title
@@ -47,17 +47,17 @@ interface Window
     /**
      * Minimize window
      */
-    minimize(): void;
+    minimize(): Promise<void>;
 
     /**
      * Maximize window
      */
-    maximize(): void;
+    maximize(): Promise<void>;
 
     /**
      * Unmaximize window
      */
-    unmaximize(): void;
+    unmaximize(): Promise<void>;
 
     /**
      * Check if the window is maximized
@@ -67,12 +67,12 @@ interface Window
     /**
      * Set window to fullscreen
      */
-    setFullScreen(): void;
+    setFullScreen(): Promise<void>;
 
     /**
      * Unset window from fullscreen
      */
-    exitFullScreen(): void;
+    exitFullScreen(): Promise<void>;
 
     /**
      * Check if the window is fullscreen
@@ -82,12 +82,12 @@ interface Window
     /**
      * Show window
      */
-    show();
+    show(): Promise<void>;
     
     /**
      * Hide window
      */
-    hide();
+    hide(): Promise<void>;
 
     /**
      * Check if the window is visible
@@ -97,22 +97,22 @@ interface Window
     /**
      * Focus window
      */
-    focus();
+    focus(): Promise<void>;
 
     /**
      * Set window icon
      */
-    setIcon(icon: string): void;
+    setIcon(icon: string): Promise<void>;
 
     /**
      * Move window to specified coordinates
      */
-    move(x: number, y: number);
+    move(x: number, y: number): Promise<void>;
 
     /**
      * Set window size
      */
-    setSize(size: WindowSize);
+    setSize(size: WindowSize): Promise<void>;
 }
 
 declare const Neutralino;
