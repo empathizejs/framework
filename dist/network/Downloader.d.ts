@@ -66,12 +66,12 @@ export default class Downloader {
      */
     static download(uri: string, output?: string | null): Promise<Stream>;
     /**
-     * Close every open downloading stream
-     */
-    static closeStreams(forced?: boolean): void;
-    /**
      * Get a file name from the URI
      */
     static fileFromUri(uri: string): string;
+    /**
+     * Close every open downloading stream
+     */
+    static closeStreams(forced?: boolean): void;
 }
 export { Stream };

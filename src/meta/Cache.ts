@@ -2,7 +2,7 @@ import dir from '../paths/dir';
 
 type Record = {
     expired: boolean;
-    value: object|object[];
+    value: any;
 };
 
 declare const Neutralino;
@@ -67,7 +67,7 @@ export default class Cache
      * 
      * @returns promise that indicates when the value will be cached
      */
-    public static set(name: string, value: object|object[], ttl: number|null = null): Promise<void>
+    public static set(name: string, value: any, ttl: number|null = null): Promise<void>
     {
         return new Promise((resolve) => {
             const writeCache = () => {

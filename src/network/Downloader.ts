@@ -184,16 +184,6 @@ export default class Downloader
     }
 
     /**
-     * Close every open downloading stream
-     */
-    public static closeStreams(forced: boolean = false)
-    {
-        this.streams.forEach((stream) => {
-            stream.close(forced);
-        });
-    }
-
-    /**
      * Get a file name from the URI
      */
     public static fileFromUri(uri: string): string
@@ -207,6 +197,16 @@ export default class Downloader
             return file;
 
         else return 'index.html';
+    }
+
+    /**
+     * Close every open downloading stream
+     */
+    public static closeStreams(forced: boolean = false)
+    {
+        this.streams.forEach((stream) => {
+            stream.close(forced);
+        });
     }
 };
 

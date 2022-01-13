@@ -1,6 +1,6 @@
 declare type Record = {
     expired: boolean;
-    value: object | object[];
+    value: any;
 };
 export default class Cache {
     /**
@@ -23,6 +23,6 @@ export default class Cache {
      *
      * @returns promise that indicates when the value will be cached
      */
-    static set(name: string, value: object | object[], ttl?: number | null): Promise<void>;
+    static set(name: string, value: any, ttl?: number | null): Promise<void>;
 }
 export type { Record };
