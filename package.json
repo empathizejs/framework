@@ -1,0 +1,16 @@
+{
+  "name": "@empathy/framework",
+  "version": "0.1.0",
+  "type": "module",
+  "author": "Nikita Podvirnyy <suimin.tu.mu.ga.mi@gmail.com>",
+  "license": "GPL-3.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "esbuild": "esbuild",
+    "build": "yarn esbuild src/index.ts --bundle --minify --outdir=dist --splitting --platform=node --format=esm",
+    "test": "yarn build && node test.js"
+  },
+  "devDependencies": {
+    "esbuild": "^0.14.11"
+  }
+}
