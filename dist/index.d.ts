@@ -1,7 +1,15 @@
-import path from './path/path';
-import dir from './path/dir';
+import path from './paths/path';
+import dir from './paths/dir';
 import fs from './fs/fs';
 import Windows from './windows/Windows';
 import Process from './os/Process';
 import Tray from './os/Tray';
-export { path, dir, fs, Windows, Process, Tray };
+import IPC from './os/IPC';
+import Notification from './os/Notification';
+import Archive from './os/Archive';
+import fetch from './network/fetch';
+import Domain from './network/Domain';
+import Downloader from './network/Downloader';
+import promisify from './async/promisify';
+import Cache from './meta/Cache';
+export { path, dir, fs, Windows, Process, Tray, IPC, Notification, Archive, fetch, Domain, Downloader, promisify, Cache };

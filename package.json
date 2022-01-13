@@ -1,6 +1,6 @@
 {
   "name": "@empathize/framework",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Framework for Neutralino",
   "type": "module",
   "author": "Nikita Podvirnyy <suimin.tu.mu.ga.mi@gmail.com>",
@@ -12,7 +12,9 @@
   "repository": "https://github.com/empathy-framework/framework",
   "main": "dist/index.js",
   "scripts": {
-    "build": "yarn build:pure && yarn build:types",
+    "esbuild": "esbuild",
+    "tsc": "tsc",
+    "build": "rm -rf dist && yarn build:pure && yarn build:types",
     "build:pure": "esbuild src/index.ts --bundle --minify --outdir=dist --splitting --platform=node --format=esm",
     "build:types": "tsc --emitDeclarationOnly --declaration --target es2021 --outDir dist src/index.ts",
     "test": "yarn build && node test.js"

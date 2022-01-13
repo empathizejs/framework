@@ -1,5 +1,5 @@
-import path from '../path/path';
-import dir from '../path/dir';
+import path from '../paths/path';
+import dir from '../paths/dir';
 
 declare const Neutralino;
 

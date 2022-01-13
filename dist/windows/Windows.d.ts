@@ -95,9 +95,8 @@ interface Window {
      */
     setSize(size: WindowSize): Promise<void>;
 }
-declare class Windows {
+export default class Windows {
     static get current(): Window;
     static open(name: string, options?: WindowOptions): Promise<WindowOpenResult>;
 }
 export type { WindowSize, WindowOptions, WindowOpenResult, Window };
-export default Windows;

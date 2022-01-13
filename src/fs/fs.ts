@@ -1,4 +1,4 @@
-import path from '../path/path';
+import path from '../paths/path';
 
 type EntryStats = {
     type: 'file' | 'directory';

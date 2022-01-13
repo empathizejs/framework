@@ -117,7 +117,7 @@ interface Window
 
 declare const Neutralino;
 
-class Windows
+export default class Windows
 {
     public static get current(): Window
     {
@@ -141,7 +141,7 @@ class Windows
             });
         });
     }
-}
+};
 
 export type {
     WindowSize,
@@ -149,5 +149,3 @@ export type {
     WindowOpenResult,
     Window
 };
-
-export default Windows;
