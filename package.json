@@ -1,9 +1,15 @@
 {
   "name": "@empathy/framework",
   "version": "0.1.0",
+  "description": "Framework for Neutralino",
   "type": "module",
   "author": "Nikita Podvirnyy <suimin.tu.mu.ga.mi@gmail.com>",
+  "keywords": [
+    "neutralino",
+    "framework"
+  ],
   "license": "GPL-3.0",
+  "repository": "https://github.com/empathy-framework/framework",
   "main": "dist/index.js",
   "scripts": {
     "esbuild": "esbuild",
