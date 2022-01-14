@@ -3,7 +3,12 @@ import path from '../paths/path';
 type EntryStats = {
     type: 'file' | 'directory';
     size: number;
-}
+};
+
+type Entry = {
+    name: string;
+    type: 'file' | 'directory';
+};
 
 declare const Neutralino;
 
@@ -77,12 +82,21 @@ export default class fs
     /**
      * Get list of filesystem entries inside a directory
      */
-    public static files(path: string): Promise<string[]>
+    public static files(path: string): Promise<Entry[]>
     {
         return new Promise((resolve) => {
             Neutralino.filesystem.readDirectory(path)
-                .then((files) => {
-                    resolve(files.filter((file) => file !== '.' && file !== '..'));
+                .then((files: { entry: string, type: 'FILE' | 'DIRECTORY' }[]) => {
+                    const entries: Entry[] = files
+                        .filter((file) => file.entry !== '.' && file.entry !== '..')
+                        .map((file) => {
+                            return {
+                                name: file.entry,
+                                type: file.type === 'FILE' ? 'file' : 'directory'
+                            } as Entry;
+                        });
+
+                    resolve(entries);
                 });
         });
     }
@@ -134,3 +148,5 @@ export default class fs
         });
     }
 };
+
+export type { EntryStats, Entry };

@@ -2,6 +2,10 @@ declare type EntryStats = {
     type: 'file' | 'directory';
     size: number;
 };
+declare type Entry = {
+    name: string;
+    type: 'file' | 'directory';
+};
 export default class fs {
     /**
      * Read file
@@ -28,7 +32,7 @@ export default class fs {
     /**
      * Get list of filesystem entries inside a directory
      */
-    static files(path: string): Promise<string[]>;
+    static files(path: string): Promise<Entry[]>;
     /**
      * Create folder
      */
@@ -46,4 +50,4 @@ export default class fs {
      */
     static move(from: string, to: string): Promise<void>;
 }
-export {};
+export type { EntryStats, Entry };

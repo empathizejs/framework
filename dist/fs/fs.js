@@ -62,7 +62,15 @@ export default class fs {
         return new Promise((resolve) => {
             Neutralino.filesystem.readDirectory(path)
                 .then((files) => {
-                resolve(files.filter((file) => file !== '.' && file !== '..'));
+                const entries = files
+                    .filter((file) => file.entry !== '.' && file.entry !== '..')
+                    .map((file) => {
+                    return {
+                        name: file.entry,
+                        type: file.type === 'FILE' ? 'file' : 'directory'
+                    };
+                });
+                resolve(entries);
             });
         });
     }
