@@ -9,7 +9,7 @@
     "framework"
   ],
   "license": "GPL-3.0",
-  "repository": "https://github.com/empathy-framework/framework",
+  "repository": "https://github.com/empathizejs/framework",
   "main": "dist/index.js",
   "scripts": {
     "esbuild": "esbuild",
