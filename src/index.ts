@@ -25,6 +25,8 @@ import promisify from './async/promisify';
 
 // Meta classes
 import Cache from './meta/Cache';
+import Configs from './meta/Configs';
+import Debug from './meta/Debug';
 
 export {
     // Paths API
@@ -46,5 +48,5 @@ export {
     promisify,
 
     // Meta classes
-    Cache
+    Cache, Configs, Debug
 };

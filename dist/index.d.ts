@@ -12,4 +12,6 @@ import Domain from './network/Domain';
 import Downloader from './network/Downloader';
 import promisify from './async/promisify';
 import Cache from './meta/Cache';
-export { path, dir, fs, Windows, Process, Tray, IPC, Notification, Archive, fetch, Domain, Downloader, promisify, Cache };
+import Configs from './meta/Configs';
+import Debug from './meta/Debug';
+export { path, dir, fs, Windows, Process, Tray, IPC, Notification, Archive, fetch, Domain, Downloader, promisify, Cache, Configs, Debug };
