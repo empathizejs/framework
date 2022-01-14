@@ -4,6 +4,18 @@ Empathize is a framework for [Neutralino](https://neutralino.js.org) - lightweig
 
 Empathize adds some useful functions which can help in the development of your application
 
+## Installation
+
+```zsh
+npm i @empathize/framework
+```
+
+or
+
+```zsh
+yarn add @empathize/framework
+```
+
 [Documentation](https://krypt0nn.gitbook.io/empathize)
 
 ## Examples
