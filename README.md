@@ -18,6 +18,10 @@ yarn add @empathize/framework
 
 [Documentation](https://krypt0nn.gitbook.io/empathize)
 
+## Projects using Empathize
+
+* Unofficial [Cloudflare WARP](https://github.com/krypt0nn/warp-gui)
+
 ## Examples
 
 ### Fetch computer's IP
