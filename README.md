@@ -111,7 +111,7 @@ promisify(async () => {
     console.log(`Cache expired: ${(await Cache.get('example')).expired}`);
 
     // After 10 seconds
-    setTimeout(() => {
+    setTimeout(async () => {
         // Cache expired: true
         console.log(`Cache expired: ${(await Cache.get('example')).expired}`);
     }, 10000);
