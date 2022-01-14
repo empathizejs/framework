@@ -1,12 +1,12 @@
 export default class dir {
     protected static dirs: {
-        temp: any;
-        data: any;
-        documents: any;
-        pictures: any;
-        music: any;
-        video: any;
-        downloads: any;
+        temp: null;
+        data: null;
+        documents: null;
+        pictures: null;
+        music: null;
+        video: null;
+        downloads: null;
     };
     protected static resolvePath(name: string): Promise<string>;
     /**

@@ -6,15 +6,15 @@ export default class Configs {
      * @default JSON.stringify
      */
     static serialize: {
-        (value: any, replacer?: (this: any, key: string, value: any) => any, space?: string | number): string;
-        (value: any, replacer?: (string | number)[], space?: string | number): string;
+        (value: any, replacer?: ((this: any, key: string, value: any) => any) | undefined, space?: string | number | undefined): string;
+        (value: any, replacer?: (string | number)[] | null | undefined, space?: string | number | undefined): string;
     };
     /**
      * A function that will decode an object from a string
      *
      * @default JSON.parse
      */
-    static unserialize: (text: string, reviver?: (this: any, key: string, value: any) => any) => any;
+    static unserialize: (text: string, reviver?: ((this: any, key: string, value: any) => any) | undefined) => any;
     /**
      * Path to file where the config will be stored
      *
