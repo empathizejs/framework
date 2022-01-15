@@ -44,7 +44,7 @@ export default class Configs
     protected static get configs(): Promise<object>
     {
         return new Promise((resolve) => {
-            if (this._configs === null)
+            if (this._configs === null || this.autoFlush)
             {
                 Neutralino.filesystem.readFile(this.file)
                     .then((config) => {
