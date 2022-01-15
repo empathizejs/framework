@@ -24,6 +24,7 @@ declare type LoggableOptions = {
     error?: (thread: DebugThread, err: any) => DebugOptions | string;
 };
 declare class DebugThread {
+    storage: any;
     protected thread: number;
     protected funcName: string | null;
     constructor(funcName?: string | null, options?: DebugOptions | string | null);
