@@ -3,24 +3,33 @@ export default class Configs {
     /**
      * A function that will encode an object to a string
      *
-     * @default JSON.stringify
+     * @default JSON.stringify(..., null, 4)
      */
-    static serialize: {
-        (value: any, replacer?: ((this: any, key: string, value: any) => any) | undefined, space?: string | number | undefined): string;
-        (value: any, replacer?: (string | number)[] | null | undefined, space?: string | number | undefined): string;
-    };
+    static serialize: (data: any) => string;
     /**
      * A function that will decode an object from a string
      *
      * @default JSON.parse
      */
-    static unserialize: (text: string, reviver?: ((this: any, key: string, value: any) => any) | undefined) => any;
+    static unserialize: (data: string) => any;
     /**
      * Path to file where the config will be stored
      *
      * @default "./config.json"
      */
     static file: string;
+    /**
+     * Automatically flush changes in configs to file
+     *
+     * If false, then changes will be stored in memory until
+     * flush() method will be called
+     *
+     * @default true
+     */
+    static autoFlush: boolean;
+    protected static _configs: object | null;
+    protected static get configs(): Promise<object>;
+    protected static set configs(configs: object);
     /**
      * Get config value
      *
@@ -46,5 +55,9 @@ export default class Configs {
      * @returns Promise<void> indicates if the default settings were applied
      */
     static defaults(configs: object): Promise<void>;
+    /**
+     * Write all config changes to the file
+     */
+    static flush(): Promise<void>;
 }
 export type { scalar };

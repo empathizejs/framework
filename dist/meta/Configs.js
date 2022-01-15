@@ -1,5 +1,22 @@
 import dir from '../paths/dir';
 export default class Configs {
+    static get configs() {
+        return new Promise((resolve) => {
+            if (this._configs === null) {
+                Neutralino.filesystem.readFile(this.file)
+                    .then((config) => {
+                    this._configs = this.unserialize(config);
+                    resolve(this._configs);
+                })
+                    .catch(() => resolve({}));
+            }
+            else
+                resolve(this._configs);
+        });
+    }
+    static set configs(configs) {
+        this._configs = configs;
+    }
     /**
      * Get config value
      *
@@ -9,17 +26,14 @@ export default class Configs {
      */
     static get(name = '') {
         return new Promise(async (resolve) => {
-            Neutralino.filesystem.readFile(this.file).then((config) => {
-                config = this.unserialize(config);
-                if (name !== '') {
-                    name.split('.').forEach((value) => {
-                        config = config[value];
-                    });
+            let config = await this.configs;
+            if (name !== '')
+                for (const value of name.split('.')) {
+                    config = config[value];
+                    if (config === undefined)
+                        break;
                 }
-                resolve(config);
-            }).catch(() => {
-                setTimeout(() => resolve(this.get(name)), 100);
-            });
+            resolve(config);
         });
     }
     /**
@@ -38,15 +52,10 @@ export default class Configs {
         };
         return new Promise(async (resolve) => {
             value = await Promise.resolve(value);
-            Neutralino.filesystem.readFile(this.file).then(async (config) => {
-                config = this.serialize(getUpdatedArray(name.split('.'), this.unserialize(config), value));
-                Neutralino.filesystem.writeFile(this.file, config)
-                    .then(() => resolve());
-            }).catch(async () => {
-                let config = this.serialize(getUpdatedArray(name.split('.'), {}, value));
-                Neutralino.filesystem.writeFile(this.file, config)
-                    .then(() => resolve());
-            });
+            this.configs = getUpdatedArray(name.split('.'), await this.configs, value);
+            this.autoFlush ?
+                this.flush().then(resolve) :
+                resolve();
         });
     }
     /**
@@ -72,21 +81,30 @@ export default class Configs {
                     });
                     return current;
                 };
-                Neutralino.filesystem.writeFile(this.file, this.serialize(updateDefaults(current, configs)))
-                    .then(() => resolve());
+                this.configs = updateDefaults(current, configs);
+                this.autoFlush ?
+                    this.flush().then(resolve) :
+                    resolve();
             };
-            Neutralino.filesystem.readFile(this.file)
-                .then((config) => setDefaults(this.unserialize(config)))
-                .catch(() => setDefaults({}));
+            setDefaults(await this.configs);
+        });
+    }
+    /**
+     * Write all config changes to the file
+     */
+    static flush() {
+        return new Promise(async (resolve) => {
+            Neutralino.filesystem.writeFile(this.file, this.serialize(await this.configs))
+                .then(() => resolve());
         });
     }
 }
 /**
  * A function that will encode an object to a string
  *
- * @default JSON.stringify
+ * @default JSON.stringify(..., null, 4)
  */
-Configs.serialize = JSON.stringify;
+Configs.serialize = (value) => JSON.stringify(value, null, 4);
 /**
  * A function that will decode an object from a string
  *
@@ -99,4 +117,14 @@ Configs.unserialize = JSON.parse;
  * @default "./config.json"
  */
 Configs.file = `${dir.app}/config.json`;
+/**
+ * Automatically flush changes in configs to file
+ *
+ * If false, then changes will be stored in memory until
+ * flush() method will be called
+ *
+ * @default true
+ */
+Configs.autoFlush = true;
+Configs._configs = null;
 ;
