@@ -2,7 +2,7 @@ import dir from '../paths/dir';
 export default class Configs {
     static get configs() {
         return new Promise((resolve) => {
-            if (this._configs === null) {
+            if (this._configs === null || this.autoFlush) {
                 Neutralino.filesystem.readFile(this.file)
                     .then((config) => {
                     this._configs = this.unserialize(config);
