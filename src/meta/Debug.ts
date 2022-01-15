@@ -30,6 +30,8 @@ type LoggableOptions = {
 
 class DebugThread
 {
+    public storage: any;
+    
     protected thread: number;
     protected funcName: string|null;
 
