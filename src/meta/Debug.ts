@@ -23,9 +23,9 @@ type LogRecord = {
 type LoggableOptions = {
     function?: string;
     context?: unknown;
-    start?: (...args) => DebugOptions|string;
-    finish?: (output) => DebugOptions|string;
-    error?: (err) => DebugOptions|string;
+    start?: (thread: DebugThread, ...args) => DebugOptions|string;
+    finish?: (thread: DebugThread, output) => DebugOptions|string;
+    error?: (thread: DebugThread, err) => DebugOptions|string;
 };
 
 class DebugThread
@@ -160,7 +160,7 @@ class Debug
             let thread;
 
             if (options)
-                thread = new DebugThread(options.function ?? null, options.start ? options.start(...args) : null);
+                thread = new DebugThread(options.function ?? null, options.start ? options.start(thread, ...args) : null);
 
             const output = options && options.context ?
                 func.apply(options.context, args) : func(...args);
@@ -170,13 +170,13 @@ class Debug
                 return new Promise((resolve, reject) => {
                     output['then']((output) => {
                         if (options && options.finish)
-                            thread.log(options.finish(output));
+                            thread.log(options.finish(thread, output));
 
                         resolve(output);
                     })
                     .catch((err) => {
                         if (options && options.error)
-                            thread.log(options.error(err));
+                            thread.log(options.error(thread, err));
 
                         reject(err);
                     });
@@ -186,7 +186,7 @@ class Debug
             else
             {
                 if (options && options.finish)
-                    thread.log(options.finish(output));
+                    thread.log(options.finish(thread, output));
                 
                 return output;
             }

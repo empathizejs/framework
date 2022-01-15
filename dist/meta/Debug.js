@@ -83,26 +83,26 @@ class Debug {
         return (...args) => {
             let thread;
             if (options)
-                thread = new DebugThread(options.function ?? null, options.start ? options.start(...args) : null);
+                thread = new DebugThread(options.function ?? null, options.start ? options.start(thread, ...args) : null);
             const output = options && options.context ?
                 func.apply(options.context, args) : func(...args);
             if (typeof output === 'object' && typeof output['then'] === 'function') {
                 return new Promise((resolve, reject) => {
                     output['then']((output) => {
                         if (options && options.finish)
-                            thread.log(options.finish(output));
+                            thread.log(options.finish(thread, output));
                         resolve(output);
                     })
                         .catch((err) => {
                         if (options && options.error)
-                            thread.log(options.error(err));
+                            thread.log(options.error(thread, err));
                         reject(err);
                     });
                 });
             }
             else {
                 if (options && options.finish)
-                    thread.log(options.finish(output));
+                    thread.log(options.finish(thread, output));
                 return output;
             }
         };
