@@ -82,27 +82,61 @@ class Debug {
     static loggable(func, options) {
         return (...args) => {
             let thread;
-            if (options)
-                thread = new DebugThread(options.function ?? null, options.start ? options.start(thread, ...args) : null);
-            const output = options && options.context ?
+            if (options) {
+                const startOptions = options.start ?
+                    options.start(thread, ...args) : null;
+                if (startOptions === null)
+                    thread = new DebugThread(options.function ?? null);
+                else {
+                    if (typeof startOptions === 'object' && startOptions['options'] !== undefined) {
+                        args = options['args'];
+                        thread = new DebugThread(options.function ?? null, startOptions['options']);
+                    }
+                    // @ts-expect-error
+                    else
+                        thread = new DebugThread(options.function ?? null, startOptions);
+                }
+            }
+            let output = options && options.context ?
                 func.apply(options.context, args) : func(...args);
             if (typeof output === 'object' && typeof output['then'] === 'function') {
                 return new Promise((resolve, reject) => {
                     output['then']((output) => {
-                        if (options && options.finish)
-                            thread.log(options.finish(thread, output));
+                        if (options && options.finish) {
+                            const finishOutput = options.finish(thread, output);
+                            if (typeof finishOutput === 'object' && finishOutput['options'] !== undefined) {
+                                output = options['output'];
+                                thread.log(finishOutput['options']);
+                            }
+                            else
+                                thread.log(finishOutput);
+                        }
                         resolve(output);
                     })
-                        .catch((err) => {
-                        if (options && options.error)
-                            thread.log(options.error(thread, err));
-                        reject(err);
+                        .catch((error) => {
+                        if (options && options.error) {
+                            const errorOutput = options.error(thread, error);
+                            if (typeof errorOutput === 'object' && errorOutput['options'] !== undefined) {
+                                error = options['error'];
+                                thread.log(errorOutput['options']);
+                            }
+                            else
+                                thread.log(errorOutput);
+                        }
+                        reject(error);
                     });
                 });
             }
             else {
-                if (options && options.finish)
-                    thread.log(options.finish(thread, output));
+                if (options && options.finish) {
+                    const finishOutput = options.finish(thread, output);
+                    if (typeof finishOutput === 'object' && finishOutput['options'] !== undefined) {
+                        output = options['output'];
+                        thread.log(finishOutput['options']);
+                    }
+                    else
+                        thread.log(finishOutput);
+                }
                 return output;
             }
         };

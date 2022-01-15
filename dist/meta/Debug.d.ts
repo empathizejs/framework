@@ -19,9 +19,18 @@ declare type LogRecord = {
 declare type LoggableOptions = {
     function?: string;
     context?: unknown;
-    start?: (thread: DebugThread, ...args: any[]) => DebugOptions | string;
-    finish?: (thread: DebugThread, output: any) => DebugOptions | string;
-    error?: (thread: DebugThread, err: any) => DebugOptions | string;
+    start?: (thread: DebugThread, ...args: any[]) => DebugOptions | string | {
+        args: any[];
+        options: DebugOptions | string;
+    };
+    finish?: (thread: DebugThread, output: any) => DebugOptions | string | {
+        output: any;
+        options: DebugOptions | string;
+    };
+    error?: (thread: DebugThread, error: any) => DebugOptions | string | {
+        error: any;
+        options: DebugOptions | string;
+    };
 };
 declare class DebugThread {
     storage: any;

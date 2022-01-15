@@ -23,9 +23,9 @@ type LogRecord = {
 type LoggableOptions = {
     function?: string;
     context?: unknown;
-    start?: (thread: DebugThread, ...args) => DebugOptions|string;
-    finish?: (thread: DebugThread, output) => DebugOptions|string;
-    error?: (thread: DebugThread, err) => DebugOptions|string;
+    start?: (thread: DebugThread, ...args) => DebugOptions|string|{ args: any[], options: DebugOptions|string };
+    finish?: (thread: DebugThread, output) => DebugOptions|string|{ output: any, options: DebugOptions|string };
+    error?: (thread: DebugThread, error) => DebugOptions|string|{ error: any, options: DebugOptions|string };
 };
 
 class DebugThread
@@ -162,9 +162,28 @@ class Debug
             let thread;
 
             if (options)
-                thread = new DebugThread(options.function ?? null, options.start ? options.start(thread, ...args) : null);
+            {
+                const startOptions = options.start ?
+                    options.start(thread, ...args) : null;
 
-            const output = options && options.context ?
+                if (startOptions === null)
+                    thread = new DebugThread(options.function ?? null);
+
+                else
+                {
+                    if (typeof startOptions === 'object' && startOptions['options'] !== undefined)
+                    {
+                        args = options['args'];
+
+                        thread = new DebugThread(options.function ?? null, startOptions['options']);
+                    }
+
+                    // @ts-expect-error
+                    else thread = new DebugThread(options.function ?? null, startOptions);
+                }
+            }
+
+            let output = options && options.context ?
                 func.apply(options.context, args) : func(...args);
             
             if (typeof output === 'object' && typeof output['then'] === 'function')
@@ -172,15 +191,37 @@ class Debug
                 return new Promise((resolve, reject) => {
                     output['then']((output) => {
                         if (options && options.finish)
-                            thread.log(options.finish(thread, output));
+                        {
+                            const finishOutput = options.finish(thread, output);
+
+                            if (typeof finishOutput === 'object' && finishOutput['options'] !== undefined)
+                            {
+                                output = options['output'];
+
+                                thread.log(finishOutput['options']);
+                            }
+
+                            else thread.log(finishOutput);
+                        }
 
                         resolve(output);
                     })
-                    .catch((err) => {
+                    .catch((error) => {
                         if (options && options.error)
-                            thread.log(options.error(thread, err));
+                        {
+                            const errorOutput = options.error(thread, error);
 
-                        reject(err);
+                            if (typeof errorOutput === 'object' && errorOutput['options'] !== undefined)
+                            {
+                                error = options['error'];
+
+                                thread.log(errorOutput['options']);
+                            }
+
+                            else thread.log(errorOutput);
+                        }
+
+                        reject(error);
                     });
                 }) as T;
             }
@@ -188,7 +229,18 @@ class Debug
             else
             {
                 if (options && options.finish)
-                    thread.log(options.finish(thread, output));
+                {
+                    const finishOutput = options.finish(thread, output);
+
+                    if (typeof finishOutput === 'object' && finishOutput['options'] !== undefined)
+                    {
+                        output = options['output'];
+
+                        thread.log(finishOutput['options']);
+                    }
+
+                    else thread.log(finishOutput);
+                }
                 
                 return output;
             }
