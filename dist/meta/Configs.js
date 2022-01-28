@@ -1,8 +1,10 @@
 import dir from '../paths/dir';
 export default class Configs {
     static get configs() {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             if (this._configs === null || this.autoFlush) {
+                if (typeof this.file !== 'string')
+                    this.file = await this.file;
                 Neutralino.filesystem.readFile(this.file)
                     .then((config) => {
                     this._configs = this.unserialize(config);
@@ -94,6 +96,8 @@ export default class Configs {
      */
     static flush() {
         return new Promise(async (resolve) => {
+            if (typeof this.file !== 'string')
+                this.file = await this.file;
             Neutralino.filesystem.writeFile(this.file, this.serialize(await this.configs))
                 .then(() => resolve());
         });

@@ -17,7 +17,7 @@ export default class Configs {
      *
      * @default "./config.json"
      */
-    static file: string;
+    static file: string | Promise<string>;
     /**
      * Automatically flush changes in configs to file
      *

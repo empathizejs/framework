@@ -23,7 +23,9 @@ export default class Cache {
                     value: this.cache[name].value
                 });
             }
-            else
+            else {
+                if (typeof this.file !== 'string')
+                    this.file = await this.file;
                 Neutralino.filesystem.readFile(this.file)
                     .then((cache) => {
                     this.cache = JSON.parse(cache);
@@ -46,6 +48,7 @@ export default class Cache {
                     }
                 })
                     .catch(() => resolve(null));
+            }
         });
     }
     /**
@@ -58,7 +61,9 @@ export default class Cache {
      * @returns promise that indicates when the value will be cached
      */
     static set(name, value, ttl = null) {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
+            if (typeof this.file !== 'string')
+                this.file = await this.file;
             const writeCache = () => {
                 Debug.log({
                     function: 'Cache.set',

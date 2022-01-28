@@ -6,7 +6,7 @@ export default class Cache {
     /**
      * File where cache should be stored
      */
-    static file: string;
+    static file: string | Promise<string>;
     protected static cache: object | null;
     /**
      * Get cached value

@@ -14,7 +14,7 @@ export default class Cache
     /**
      * File where cache should be stored
      */
-    public static file: string = `${dir.temp}/.${NL_APPID}.cache.json`;
+    public static file: string|Promise<string> = `${dir.temp}/.${NL_APPID}.cache.json`;
 
     // Locally stored cache to not to access
     // cache.json file every time we want to find something
@@ -47,33 +47,39 @@ export default class Cache
                 });
             }
             
-            else Neutralino.filesystem.readFile(this.file)
-                .then((cache) => {
-                    this.cache = JSON.parse(cache);
+            else
+            {
+                if (typeof this.file !== 'string')
+                    this.file = await this.file;
+                
+                Neutralino.filesystem.readFile(this.file)
+                    .then((cache) => {
+                        this.cache = JSON.parse(cache);
 
-                    if (this.cache![name] === undefined)
-                        resolve(null);
+                        if (this.cache![name] === undefined)
+                            resolve(null);
 
-                    else
-                    {
-                        const output = {
-                            expired: this.cache![name].ttl !== null ? Date.now() > this.cache![name].ttl * 1000 : false,
-                            value: this.cache![name].value
-                        };
+                        else
+                        {
+                            const output = {
+                                expired: this.cache![name].ttl !== null ? Date.now() > this.cache![name].ttl * 1000 : false,
+                                value: this.cache![name].value
+                            };
 
-                        Debug.log({
-                            function: 'Cache.get',
-                            message: [
-                                `Resolved ${output.expired ? 'expired' : 'unexpired'} cache`,
-                                `[name] ${name}`,
-                                `[value] ${JSON.stringify(output.value)}`
-                            ]
-                        });
+                            Debug.log({
+                                function: 'Cache.get',
+                                message: [
+                                    `Resolved ${output.expired ? 'expired' : 'unexpired'} cache`,
+                                    `[name] ${name}`,
+                                    `[value] ${JSON.stringify(output.value)}`
+                                ]
+                            });
 
-                        resolve(output);
-                    }
-                })
-                .catch(() => resolve(null));
+                            resolve(output);
+                        }
+                    })
+                    .catch(() => resolve(null));
+            }
         });
     }
 
@@ -88,7 +94,10 @@ export default class Cache
      */
     public static set(name: string, value: any, ttl: number|null = null): Promise<void>
     {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
+            if (typeof this.file !== 'string')
+                this.file = await this.file;
+            
             const writeCache = () => {
                 Debug.log({
                     function: 'Cache.set',

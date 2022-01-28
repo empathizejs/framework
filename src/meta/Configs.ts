@@ -27,7 +27,7 @@ export default class Configs
      * 
      * @default "./config.json"
      */
-    public static file = `${dir.app}/config.json`;
+    public static file: string|Promise<string> = `${dir.app}/config.json`;
 
     /**
      * Automatically flush changes in configs to file
@@ -43,9 +43,12 @@ export default class Configs
 
     protected static get configs(): Promise<object>
     {
-        return new Promise((resolve) => {
+        return new Promise(async (resolve) => {
             if (this._configs === null || this.autoFlush)
             {
+                if (typeof this.file !== 'string')
+                    this.file = await this.file;
+                
                 Neutralino.filesystem.readFile(this.file)
                     .then((config) => {
                         this._configs = this.unserialize(config);
@@ -161,6 +164,9 @@ export default class Configs
     public static flush(): Promise<void>
     {
         return new Promise(async (resolve) => {
+            if (typeof this.file !== 'string')
+                this.file = await this.file;
+            
             Neutralino.filesystem.writeFile(this.file, this.serialize(await this.configs))
                 .then(() => resolve());
         });
