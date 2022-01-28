@@ -1,3 +1,4 @@
+import { DebugThread } from '../meta/Debug';
 declare class Stream {
     protected _id: number;
     /**
@@ -22,6 +23,7 @@ declare class Stream {
     protected started: boolean;
     protected paused: boolean;
     protected finished: boolean;
+    protected debugThread: DebugThread;
     constructor(uri: string, output: string, total: number);
     /**
      * Specify event that will be called when the download gets started

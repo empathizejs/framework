@@ -98,6 +98,19 @@ export default class Configs {
                 .then(() => resolve());
         });
     }
+    /**
+     * Load configs from the file
+     *
+     * Used to sync [autoFlush = false] configs changes
+     * in different windows
+     */
+    static load() {
+        this._configs = null;
+        return new Promise(async (resolve) => {
+            this._configs = await this.configs;
+            resolve();
+        });
+    }
 }
 /**
  * A function that will encode an object to a string

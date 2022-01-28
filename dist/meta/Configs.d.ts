@@ -59,5 +59,12 @@ export default class Configs {
      * Write all config changes to the file
      */
     static flush(): Promise<void>;
+    /**
+     * Load configs from the file
+     *
+     * Used to sync [autoFlush = false] configs changes
+     * in different windows
+     */
+    static load(): Promise<void>;
 }
 export type { scalar };

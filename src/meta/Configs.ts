@@ -165,6 +165,23 @@ export default class Configs
                 .then(() => resolve());
         });
     }
+
+    /**
+     * Load configs from the file
+     * 
+     * Used to sync [autoFlush = false] configs changes
+     * in different windows
+     */
+    public static load(): Promise<void>
+    {
+        this._configs = null;
+
+        return new Promise(async (resolve) => {
+            this._configs = await this.configs;
+
+            resolve();
+        });
+    }
 };
 
 export type { scalar };

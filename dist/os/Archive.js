@@ -1,5 +1,6 @@
 import promisify from '../async/promisify';
 import path from '../paths/path';
+import { DebugThread } from '../meta/Debug';
 class Stream {
     /**
      * @param archive path to archive
@@ -18,6 +19,12 @@ class Stream {
         this.path = archive;
         this.unpackDir = unpackDir;
         this.started = true;
+        const debugThread = new DebugThread('Archive/Stream', {
+            message: {
+                'path': path,
+                'unpack dir': unpackDir
+            }
+        });
         if (this.onStart)
             this.onStart();
         Archive.getInfo(archive).then((info) => {
@@ -41,6 +48,7 @@ class Stream {
                 }).then((result) => {
                     this._id = result.pid;
                 });
+                debugThread.log(`Unpacking started with command: ${command}`);
                 const updateProgress = async () => {
                     let difference = 0;
                     let pool = [];
@@ -70,6 +78,7 @@ class Stream {
                         this.onProgress(this.unpacked, this.archive.size.uncompressed, difference);
                     if (this.unpacked >= this.archive.size.uncompressed) {
                         this.finished = true;
+                        debugThread.log('Unpacking finished');
                         if (this.onFinish)
                             this.onFinish();
                     }
@@ -153,6 +162,7 @@ export default class Archive {
      * @returns null if the archive has unsupported type. Otherwise - archive info
      */
     static getInfo(path) {
+        const debugThread = new DebugThread('Archive.getInfo', `Getting info about archive: ${path}`);
         return new Promise(async (resolve) => {
             let archive = {
                 type: this.getType(path),
@@ -162,41 +172,49 @@ export default class Archive {
                 },
                 files: []
             };
-            switch (archive.type) {
-                case 'tar':
-                    const tarOutput = await Neutralino.os.execCommand(`tar -tvf "${path}"`);
-                    for (const match of tarOutput.stdOut.matchAll(/^[dwxr\-]+ [\w/]+[ ]+(\d+) [0-9\-]+ [0-9\:]+ (.+)/gm)) {
-                        let fileSize = parseInt(match[1]);
-                        archive.size.uncompressed += fileSize;
-                        archive.files.push({
-                            path: match[2],
-                            size: {
-                                compressed: null,
-                                uncompressed: fileSize
-                            }
-                        });
+            if (archive.type === null)
+                resolve(null);
+            else {
+                switch (archive.type) {
+                    case 'tar':
+                        const tarOutput = await Neutralino.os.execCommand(`tar -tvf "${path}"`);
+                        for (const match of tarOutput.stdOut.matchAll(/^[dwxr\-]+ [\w/]+[ ]+(\d+) [0-9\-]+ [0-9\:]+ (.+)/gm)) {
+                            let fileSize = parseInt(match[1]);
+                            archive.size.uncompressed += fileSize;
+                            archive.files.push({
+                                path: match[2],
+                                size: {
+                                    compressed: null,
+                                    uncompressed: fileSize
+                                }
+                            });
+                        }
+                        break;
+                    case 'zip':
+                        const zipOutput = await Neutralino.os.execCommand(`unzip -v "${path}"`);
+                        for (const match of zipOutput.stdOut.matchAll(/^(\d+)  [a-zA-Z\:]+[ ]+(\d+)[ ]+[0-9\-]+% [0-9\-]+ [0-9\:]+ [a-f0-9]{8}  (.+)/gm)) {
+                            let uncompressedSize = parseInt(match[1]), compressedSize = parseInt(match[2]);
+                            archive.size.compressed += compressedSize;
+                            archive.size.uncompressed += uncompressedSize;
+                            archive.files.push({
+                                path: match[3],
+                                size: {
+                                    compressed: compressedSize,
+                                    uncompressed: uncompressedSize
+                                }
+                            });
+                        }
+                        break;
+                }
+                debugThread.log({
+                    message: {
+                        'type': archive.type,
+                        'compressed size': archive.size.compressed,
+                        'uncompressed size': archive.size.uncompressed,
+                        'files amount': archive.files.length
                     }
-                    resolve(archive);
-                    break;
-                case 'zip':
-                    const zipOutput = await Neutralino.os.execCommand(`unzip -v "${path}"`);
-                    for (const match of zipOutput.stdOut.matchAll(/^(\d+)  [a-zA-Z\:]+[ ]+(\d+)[ ]+[0-9\-]+% [0-9\-]+ [0-9\:]+ [a-f0-9]{8}  (.+)/gm)) {
-                        let uncompressedSize = parseInt(match[1]), compressedSize = parseInt(match[2]);
-                        archive.size.compressed += compressedSize;
-                        archive.size.uncompressed += uncompressedSize;
-                        archive.files.push({
-                            path: match[3],
-                            size: {
-                                compressed: compressedSize,
-                                uncompressed: uncompressedSize
-                            }
-                        });
-                    }
-                    resolve(archive);
-                    break;
-                default:
-                    resolve(null);
-                    break;
+                });
+                resolve(archive);
             }
         });
     }

@@ -1,5 +1,6 @@
 import path from '../paths/path';
 import fetch from '../network/fetch';
+import { DebugThread } from '../meta/Debug';
 class Stream {
     constructor(uri, output, total) {
         this._id = -1;
@@ -19,6 +20,13 @@ class Stream {
         this.output = output;
         this.total = total;
         this.started = true;
+        this.debugThread = new DebugThread('Downloader/Stream', {
+            message: {
+                'uri': uri,
+                'output file': output,
+                'total size': total
+            }
+        });
         if (this.onStart)
             this.onStart();
         this.resume();
@@ -30,6 +38,7 @@ class Stream {
                     this.previous = stats.size;
                     if (stats.size >= this.total) {
                         this.finished = true;
+                        this.debugThread.log('Downloading finished');
                         if (this.onFinish)
                             this.onFinish();
                     }
@@ -84,6 +93,7 @@ class Stream {
      */
     pause() {
         if (!this.paused) {
+            this.debugThread.log('Downloading paused');
             this.close(true);
             this.paused = true;
         }
@@ -94,6 +104,7 @@ class Stream {
     resume() {
         if (this.paused) {
             const command = `curl -s -L -N -C - -o "${path.addSlashes(this.output)}" "${this.uri}"`;
+            this.debugThread.log(`Downloading started with command: ${command}`);
             Neutralino.os.execCommand(command, {
                 background: true
             }).then((result) => {

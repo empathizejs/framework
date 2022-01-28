@@ -1,5 +1,6 @@
 import path from '../paths/path';
 import dir from '../paths/dir';
+import Debug, { DebugThread } from '../meta/Debug';
 
 declare const Neutralino;
 
@@ -68,6 +69,8 @@ class Process
         this.id = pid;
         this.outputFile = outputFile;
 
+        const debugThread = new DebugThread('Process/Stream', `Opened process ${pid} stream`);
+
         const updateStatus = () => {
             this.running().then((running) => {
                 // The process is still running
@@ -81,6 +84,8 @@ class Process
                 else
                 {
                     this._finished = true;
+
+                    debugThread.log('Process stopped');
 
                     if (this.onFinish)
                         this.onFinish(this);
@@ -208,6 +213,17 @@ class Process
                 else
                 {
                     const processId = parseInt(childProcess.stdOut.substring(0, childProcess.stdOut.length - 1));
+
+                    Debug.log({
+                        function: 'Process.run',
+                        message: {
+                            'running command': command,
+                            'cwd': options.cwd,
+                            'initial process id': process.pid,
+                            'real process id': processId,
+                            ...options.env
+                        }
+                    });
         
                     resolve(new Process(processId, tmpFile));
                 }
