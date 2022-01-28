@@ -98,7 +98,7 @@ export default class Configs {
         return new Promise(async (resolve) => {
             if (typeof this.file !== 'string')
                 this.file = await this.file;
-            Neutralino.filesystem.writeFile(this.file, this.serialize(await this.configs))
+            Neutralino.filesystem.writeFile(this.file, this.serialize(this._configs ?? {}))
                 .then(() => resolve());
         });
     }
