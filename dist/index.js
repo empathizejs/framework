@@ -11,6 +11,7 @@ import Tray from './os/Tray';
 import IPC from './os/IPC';
 import Notification from './os/Notification';
 import Archive from './os/Archive';
+import Package from './os/Package';
 // Network API
 import fetch from './network/fetch';
 import Domain from './network/Domain';
@@ -29,7 +30,7 @@ fs,
 // Windows API
 Windows, 
 // OS API
-Process, Tray, IPC, Notification, Archive, 
+Process, Tray, IPC, Notification, Archive, Package, 
 // Network API
 fetch, Domain, Downloader, 
 // Async API
