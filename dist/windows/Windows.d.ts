@@ -94,6 +94,10 @@ interface Window {
      * Set window size
      */
     setSize(size: WindowSize): Promise<void>;
+    /**
+     * Center window
+     */
+    center(): Promise<void>;
 }
 export default class Windows {
     static get current(): Window;

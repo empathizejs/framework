@@ -113,6 +113,11 @@ interface Window
      * Set window size
      */
     setSize(size: WindowSize): Promise<void>;
+
+    /**
+     * Center window
+     */
+    center(): Promise<void>;
 }
 
 declare const Neutralino;
@@ -121,7 +126,14 @@ export default class Windows
 {
     public static get current(): Window
     {
-        return Neutralino.window;
+        return {
+            ...Neutralino.window,
+
+            center(): Promise<void>
+            {
+                return Neutralino.window.move((window.screen.width - window.innerWidth) / 2, (window.screen.height - window.innerHeight) / 2);
+            }
+        };
     }
 
     public static open(name: string, options: WindowOptions = {}): Promise<WindowOpenResult>
