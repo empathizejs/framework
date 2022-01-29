@@ -2,8 +2,8 @@ export default class Windows {
     static get current() {
         return {
             ...Neutralino.window,
-            center() {
-                return Neutralino.window.move((window.screen.width - window.innerWidth) / 2, (window.screen.height - window.innerHeight) / 2);
+            center(width, height) {
+                return Neutralino.window.move((window.screen.width - (width ?? window.innerWidth)) / 2, (window.screen.height - (height ?? window.innerHeight)) / 2);
             }
         };
     }

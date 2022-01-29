@@ -116,8 +116,15 @@ interface Window
 
     /**
      * Center window
+     * 
+     * @param width - width of the window
+     * @param height - height of the window
+     * 
+     * Because before windows is not initialized - its window.innerWidth (-Height)
+     * values are not correct, and also on wayland with some params
+     * windows have incorrect sizes, you can (and by that I mean you should) provide them manually
      */
-    center(): Promise<void>;
+    center(width?: number, height?: number): Promise<void>;
 }
 
 declare const Neutralino;
@@ -129,9 +136,12 @@ export default class Windows
         return {
             ...Neutralino.window,
 
-            center(): Promise<void>
+            center(width?: number, height?: number): Promise<void>
             {
-                return Neutralino.window.move((window.screen.width - window.innerWidth) / 2, (window.screen.height - window.innerHeight) / 2);
+                return Neutralino.window.move(
+                    (window.screen.width - (width ?? window.innerWidth)) / 2,
+                    (window.screen.height - (height ?? window.innerHeight)) / 2
+                );
             }
         };
     }
