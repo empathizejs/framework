@@ -48,6 +48,12 @@ export default class Configs {
      */
     static set(name: string, value: scalar | scalar[] | Promise<scalar | scalar[]>): Promise<void>;
     /**
+     * Remove configs value
+     *
+     * @returns Promise<void> indicates when the configs will be updated
+     */
+    static remove(name: string): Promise<void>;
+    /**
      * Set default values
      *
      * @param configs object of default values

@@ -121,6 +121,41 @@ export default class Configs
     }
 
     /**
+     * Remove configs value
+     * 
+     * @returns Promise<void> indicates when the configs will be updated
+     */
+    public static remove(name: string): Promise<void>
+    {
+        return new Promise(async (resolve) => {
+            const getFilteredArray = (array: object, path: string[]) => {
+                if (array[path[0]] === undefined)
+                    return array;
+
+                else if (path.length === 1)
+                {
+                    delete array[path[0]];
+
+                    return array;
+                }
+
+                else
+                {
+                    array[path[0]] = getFilteredArray(array[path[0]], path.slice(1));
+
+                    return array;
+                }
+            };
+
+            this.configs = getFilteredArray(await this.configs, name.split('.'));
+
+            this.autoFlush ?
+                this.flush().then(resolve) :
+                resolve();
+        });
+    }
+
+    /**
      * Set default values
      * 
      * @param configs object of default values

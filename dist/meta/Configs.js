@@ -61,6 +61,31 @@ export default class Configs {
         });
     }
     /**
+     * Remove configs value
+     *
+     * @returns Promise<void> indicates when the configs will be updated
+     */
+    static remove(name) {
+        return new Promise(async (resolve) => {
+            const getFilteredArray = (array, path) => {
+                if (array[path[0]] === undefined)
+                    return array;
+                else if (path.length === 1) {
+                    delete array[path[0]];
+                    return array;
+                }
+                else {
+                    array[path[0]] = getFilteredArray(array[path[0]], path.slice(1));
+                    return array;
+                }
+            };
+            this.configs = getFilteredArray(await this.configs, name.split('.'));
+            this.autoFlush ?
+                this.flush().then(resolve) :
+                resolve();
+        });
+    }
+    /**
      * Set default values
      *
      * @param configs object of default values
