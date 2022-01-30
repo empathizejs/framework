@@ -1,33 +1,33 @@
 // Paths API
-import path from './paths/path';
-import dir from './paths/dir';
+import path from './paths/path.js';
+import dir from './paths/dir.js';
 
 // Filesystem API
-import fs from './fs/fs';
+import fs from './fs/fs.js';
 
 // Windows API
-import Windows from './windows/Windows';
+import Windows from './windows/Windows.js';
 
 // OS API
-import Process from './os/Process';
-import Tray from './os/Tray';
-import IPC from './os/IPC';
-import Notification from './os/Notification';
-import Archive from './os/Archive';
-import Package from './os/Package';
+import Process from './os/Process.js';
+import Tray from './os/Tray.js';
+import IPC from './os/IPC.js';
+import Notification from './os/Notification.js';
+import Archive from './os/Archive.js';
+import Package from './os/Package.js';
 
 // Network API
-import fetch from './network/fetch';
-import Domain from './network/Domain';
-import Downloader from './network/Downloader';
+import fetch from './network/fetch.js';
+import Domain from './network/Domain.js';
+import Downloader from './network/Downloader.js';
 
 // Async API
-import promisify from './async/promisify';
+import promisify from './async/promisify.js';
 
 // Meta classes
-import Cache from './meta/Cache';
-import Configs from './meta/Configs';
-import Debug from './meta/Debug';
+import Cache from './meta/Cache.js';
+import Configs from './meta/Configs.js';
+import Debug from './meta/Debug.js';
 
 export {
     // Paths API

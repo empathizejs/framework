@@ -1,4 +1,4 @@
-import path from '../paths/path';
+import path from '../paths/path.js';
 
 type EntryStats = {
     type: 'file' | 'directory';

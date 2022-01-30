@@ -1,6 +1,6 @@
-import path from '../paths/path';
-import fetch from '../network/fetch';
-import { DebugThread } from '../meta/Debug';
+import path from '../paths/path.js';
+import fetch from '../network/fetch.js';
+import { DebugThread } from '../meta/Debug.js';
 class Stream {
     constructor(uri, output, total) {
         this._id = -1;

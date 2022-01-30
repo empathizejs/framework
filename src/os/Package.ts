@@ -1,5 +1,5 @@
-import path from '../paths/path';
-import fs from '../fs/fs';
+import path from '../paths/path.js';
+import fs from '../fs/fs.js';
 
 declare const Neutralino;
 

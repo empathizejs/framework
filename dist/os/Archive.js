@@ -1,6 +1,6 @@
-import promisify from '../async/promisify';
-import path from '../paths/path';
-import { DebugThread } from '../meta/Debug';
+import promisify from '../async/promisify.js';
+import path from '../paths/path.js';
+import { DebugThread } from '../meta/Debug.js';
 class Stream {
     /**
      * @param archive path to archive

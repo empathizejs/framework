@@ -1,6 +1,6 @@
-import path from '../paths/path';
-import dir from '../paths/dir';
-import Debug, { DebugThread } from '../meta/Debug';
+import path from '../paths/path.js';
+import dir from '../paths/dir.js';
+import Debug, { DebugThread } from '../meta/Debug.js';
 
 declare const Neutralino;
 

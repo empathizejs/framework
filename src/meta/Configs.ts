@@ -1,4 +1,4 @@
-import dir from '../paths/dir';
+import dir from '../paths/dir.js';
 
 declare const Neutralino;
 

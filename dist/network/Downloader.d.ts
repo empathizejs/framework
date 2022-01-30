@@ -1,4 +1,4 @@
-import { DebugThread } from '../meta/Debug';
+import { DebugThread } from '../meta/Debug.js';
 declare class Stream {
     protected _id: number;
     /**

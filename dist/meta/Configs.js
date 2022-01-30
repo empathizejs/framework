@@ -1,4 +1,4 @@
-import dir from '../paths/dir';
+import dir from '../paths/dir.js';
 export default class Configs {
     static get configs() {
         return new Promise(async (resolve) => {

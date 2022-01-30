@@ -1,5 +1,5 @@
-import dir from '../paths/dir';
-import Debug from './Debug';
+import dir from '../paths/dir.js';
+import Debug from './Debug.js';
 
 type Record = {
     expired: boolean;

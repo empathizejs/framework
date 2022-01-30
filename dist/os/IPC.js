@@ -1,4 +1,4 @@
-import dir from '../paths/dir';
+import dir from '../paths/dir.js';
 class IPCRecord {
     constructor(id, time, data) {
         this.id = id;

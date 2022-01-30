@@ -1,4 +1,4 @@
-import path from '../paths/path';
+import path from '../paths/path.js';
 
 type NotificationOptions = {
     /**

@@ -1,5 +1,5 @@
-import path from '../paths/path';
-import { DebugThread } from '../meta/Debug';
+import path from '../paths/path.js';
+import { DebugThread } from '../meta/Debug.js';
 
 type DomainInfo = {
     uri: string;
