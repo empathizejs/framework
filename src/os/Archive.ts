@@ -70,7 +70,7 @@ class Stream
 
         const debugThread = new DebugThread('Archive/Stream', {
             message: {
-                'path': path,
+                'path': archive,
                 'unpack dir': unpackDir
             }
         });

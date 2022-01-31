@@ -21,7 +21,7 @@ class Stream {
         this.started = true;
         const debugThread = new DebugThread('Archive/Stream', {
             message: {
-                'path': path,
+                'path': archive,
                 'unpack dir': unpackDir
             }
         });
