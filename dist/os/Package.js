@@ -12,14 +12,20 @@ export default class Package {
         return new Promise(async (resolve) => {
             let available = false;
             let paths = (await Neutralino.os.getEnv('PATH')).split(path.delimiter);
-            // Add "/usr/share" if it is not included
-            // because we use these paths to check if some library exists in system
-            if (!paths.includes('/usr/share'))
-                paths.push('/usr/share');
+            // Add some paths if they're not included
+            // because we use these paths to check if some library exists in the system
+            paths = paths.concat([
+                '/usr/share',
+                '/opt'
+            ]);
+            let pathsMap = {};
+            // Remove identical paths by making them the object's keys
+            for (const path of paths)
+                pathsMap[path] = true;
             // Sort them by length because obviously
-            // "/usr/bin" more important than some randomly generated
+            // "/usr/bin" is more important than some randomly generated
             // yaml or npm folder for its globally downloaded packages
-            paths = paths.sort((a, b) => a.length - b.length);
+            paths = Object.keys(pathsMap).sort((a, b) => a.length - b.length);
             for (const path of paths)
                 if (await fs.exists(`${path}/${name}`)) {
                     available = true;
