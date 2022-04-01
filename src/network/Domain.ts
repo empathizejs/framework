@@ -17,7 +17,7 @@ export default class Domain
         const debugThread = new DebugThread('Domain.getInfo', `Getting info about uri: ${uri}`);
 
         return new Promise(async (resolve) => {
-            const process = await Neutralino.os.execCommand(`LANG=en_US.UTF-8 ping -n -4 -w 1 -B "${path.addSlashes(uri)}"`);
+            const process = await Neutralino.os.execCommand(`LANG=C ping -n -4 -w 1 -B "${path.addSlashes(uri)}"`);
             const output = process.stdOut || process.stdErr;
 
             const resolveInfo = (info: DomainInfo) => {
