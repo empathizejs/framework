@@ -11,19 +11,23 @@ export default class Package
      * This function will check every directory in the $PATH
      * env variable, plus "/usr/share" folder, and check
      * if the {name} file or folder exists there
+     * 
+     * @param paths - additional paths to search for the package in
      */
-    public static exists(name: string): Promise<boolean>
+    public static exists(name: string, paths: string[] = []): Promise<boolean>
     {
         return new Promise(async (resolve) => {
             let available = false;
 
-            let paths: string[] = (await Neutralino.os.getEnv('PATH')).split(path.delimiter);
+            let env_paths: string[] = (await Neutralino.os.getEnv('PATH')).split(path.delimiter);
 
             // Add some paths if they're not included
             // because we use these paths to check if some library exists in the system
-            paths = paths.concat([
+            paths = env_paths.concat([
                 '/usr/share',
-                '/opt'
+                '/opt',
+                '/app', // Flatpak support
+                ...paths
             ]);
     
             let pathsMap = {};
