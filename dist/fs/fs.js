@@ -4,21 +4,18 @@ export default class fs {
      * Read file
      */
     static read(file, binary = false) {
-        return new Promise(async (resolve) => {
-            resolve(binary ?
-                await Neutralino.filesystem.readBinaryFile(file) :
-                await Neutralino.filesystem.readFile(file));
+        return new Promise(async (resolve, reject) => {
+            (binary ? Neutralino.filesystem.readBinaryFile(file) : Neutralino.filesystem.readFile(file))
+                .then(resolve).catch(reject);
         });
     }
     /**
      * Write file
      */
     static write(file, data) {
-        return new Promise((resolve) => {
-            if (typeof data === 'string')
-                Neutralino.filesystem.writeFile(file, data).then(resolve);
-            else
-                Neutralino.filesystem.writeBinaryFile(file, data).then(resolve);
+        return new Promise((resolve, reject) => {
+            (typeof data === 'string' ? Neutralino.filesystem.writeFile(file, data) : Neutralino.filesystem.writeBinaryFile(file, data))
+                .then(resolve).catch(reject);
         });
     }
     /**
@@ -50,16 +47,17 @@ export default class fs {
      * Remove file or directory
      */
     static remove(file) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             Neutralino.os.execCommand(`rm -rf "${path.addSlashes(file)}"`)
-                .then(() => resolve());
+                .then(() => resolve())
+                .catch(reject);
         });
     }
     /**
      * Get list of filesystem entries inside a directory
      */
     static files(path) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             Neutralino.filesystem.readDirectory(path)
                 .then((files) => {
                 const entries = files
@@ -71,16 +69,18 @@ export default class fs {
                     };
                 });
                 resolve(entries);
-            });
+            })
+                .catch(reject);
         });
     }
     /**
      * Create folder
      */
     static mkdir(directory) {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             Neutralino.os.execCommand(`mkdir -p "${path.addSlashes(directory)}"`)
-                .then(() => resolve());
+                .then(() => resolve())
+                .catch(reject);
         });
     }
     /**
@@ -95,7 +95,8 @@ export default class fs {
                     reject(new Error('File or directory doesn\'t exist'));
                 else
                     Neutralino.os.execCommand(`cp -r "${path.addSlashes(from)}" "${path.addSlashes(to)}"`)
-                        .then(() => resolve());
+                        .then(() => resolve())
+                        .catch(reject);
             });
         });
     }
@@ -111,7 +112,8 @@ export default class fs {
                     reject(new Error('File or directory doesn\'t exist'));
                 else
                     Neutralino.os.execCommand(`mv "${path.addSlashes(from)}" "${path.addSlashes(to)}"`)
-                        .then(() => resolve());
+                        .then(() => resolve())
+                        .catch(reject);
             });
         });
     }

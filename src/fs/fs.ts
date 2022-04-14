@@ -19,10 +19,9 @@ export default class fs
      */
     public static read(file: string, binary: boolean = false): Promise<string|ArrayBuffer>
     {
-        return new Promise(async (resolve) => {
-            resolve(binary ?
-                await Neutralino.filesystem.readBinaryFile(file) :
-                await Neutralino.filesystem.readFile(file));
+        return new Promise(async (resolve, reject) => {
+            (binary ? Neutralino.filesystem.readBinaryFile(file) : Neutralino.filesystem.readFile(file))
+                .then(resolve).catch(reject);
         });
     }
 
@@ -31,11 +30,9 @@ export default class fs
      */
     public static write(file: string, data: string|ArrayBuffer): Promise<void>
     {
-        return new Promise((resolve) => {
-            if (typeof data === 'string')
-                Neutralino.filesystem.writeFile(file, data).then(resolve);
-
-            else Neutralino.filesystem.writeBinaryFile(file, data).then(resolve);
+        return new Promise((resolve, reject) => {
+            (typeof data === 'string' ? Neutralino.filesystem.writeFile(file, data) : Neutralino.filesystem.writeBinaryFile(file, data))
+                .then(resolve).catch(reject);
         });
     }
 
@@ -73,9 +70,10 @@ export default class fs
      */
     public static remove(file: string): Promise<void>
     {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             Neutralino.os.execCommand(`rm -rf "${path.addSlashes(file)}"`)
-                .then(() => resolve());
+                .then(() => resolve())
+                .catch(reject);
         });
     }
 
@@ -84,7 +82,7 @@ export default class fs
      */
     public static files(path: string): Promise<Entry[]>
     {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             Neutralino.filesystem.readDirectory(path)
                 .then((files: { entry: string, type: 'FILE' | 'DIRECTORY' }[]) => {
                     const entries: Entry[] = files
@@ -97,7 +95,8 @@ export default class fs
                         });
 
                     resolve(entries);
-                });
+                })
+                .catch(reject);
         });
     }
 
@@ -106,9 +105,10 @@ export default class fs
      */
     public static mkdir(directory: string): Promise<void>
     {
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             Neutralino.os.execCommand(`mkdir -p "${path.addSlashes(directory)}"`)
-                .then(() => resolve());
+                .then(() => resolve())
+                .catch(reject);
         });
     }
 
@@ -125,7 +125,8 @@ export default class fs
                     reject(new Error('File or directory doesn\'t exist'));
 
                 else Neutralino.os.execCommand(`cp -r "${path.addSlashes(from)}" "${path.addSlashes(to)}"`)
-                    .then(() => resolve());
+                    .then(() => resolve())
+                    .catch(reject);
             });
         });
     }
@@ -143,7 +144,8 @@ export default class fs
                     reject(new Error('File or directory doesn\'t exist'));
 
                 else Neutralino.os.execCommand(`mv "${path.addSlashes(from)}" "${path.addSlashes(to)}"`)
-                    .then(() => resolve());
+                    .then(() => resolve())
+                    .catch(reject);
             });
         });
     }
