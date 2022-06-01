@@ -136,6 +136,25 @@ export default class Cache
             else writeCache();
         });
     }
+
+    /**
+     * Clear launcher cache
+     * 
+     * @returns false if failed to delete cache file when removeFile = true
+     */
+    public static clear(removeFile: boolean = false): Promise<boolean>
+    {
+        this.cache = null;
+
+        return new Promise(async (resolve) => {
+            if (removeFile)
+                Neutralino.filesystem.removeFile(this.file)
+                    .then(() => resolve(true))
+                    .catch(() => resolve(false));
+            
+            else resolve(true);
+        });
+    }
 };
 
 export type { Record };

@@ -24,5 +24,11 @@ export default class Cache {
      * @returns promise that indicates when the value will be cached
      */
     static set(name: string, value: any, ttl?: number | null): Promise<void>;
+    /**
+     * Clear launcher cache
+     *
+     * @returns false if failed to delete cache file when removeFile = true
+     */
+    static clear(removeFile?: boolean): Promise<boolean>;
 }
 export type { Record };

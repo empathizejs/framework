@@ -95,6 +95,22 @@ export default class Cache {
                 writeCache();
         });
     }
+    /**
+     * Clear launcher cache
+     *
+     * @returns false if failed to delete cache file when removeFile = true
+     */
+    static clear(removeFile = false) {
+        this.cache = null;
+        return new Promise(async (resolve) => {
+            if (removeFile)
+                Neutralino.filesystem.removeFile(this.file)
+                    .then(() => resolve(true))
+                    .catch(() => resolve(false));
+            else
+                resolve(true);
+        });
+    }
 }
 /**
  * File where cache should be stored
