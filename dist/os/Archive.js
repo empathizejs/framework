@@ -38,7 +38,7 @@ class Stream {
                 let command = {
                     tar: `tar -xvf "${path.addSlashes(archive)}"${unpackDir ? ` -C "${path.addSlashes(unpackDir)}"` : ''}`,
                     zip: `unzip -o "${path.addSlashes(archive)}"${unpackDir ? ` -d "${path.addSlashes(unpackDir)}"` : ''}`,
-                    '7z': `7z x "${path.addSlashes(archive)}"${unpackDir ? ` -o"${path.addSlashes(unpackDir)}"` : ''}`
+                    '7z': `7z x "${path.addSlashes(archive)}"${unpackDir ? ` -o"${path.addSlashes(unpackDir)}"` : ''} -aoa`
                 }[this.archive.type];
                 if (unpackDir)
                     command = `mkdir -p "${path.addSlashes(unpackDir)}" && ${command}`;
