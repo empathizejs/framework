@@ -1,4 +1,4 @@
-declare type ArchiveType = 'tar' | 'zip' | null;
+declare type ArchiveType = 'tar' | 'zip' | '7z';
 declare type Size = {
     compressed?: number | null;
     uncompressed?: number | null;

@@ -2,10 +2,7 @@ import promisify from '../async/promisify.js';
 import path from '../paths/path.js';
 import { DebugThread } from '../meta/Debug.js';
 
-type ArchiveType =
-    | 'tar'
-    | 'zip'
-    | null;
+type ArchiveType = 'tar' | 'zip' | '7z';
 
 type Size = {
     compressed?: number | null;
@@ -93,7 +90,8 @@ class Stream
 
                 let command = {
                     tar: `tar -xvf "${path.addSlashes(archive)}"${unpackDir ? ` -C "${path.addSlashes(unpackDir)}"` : ''}`,
-                    zip: `unzip -o "${path.addSlashes(archive)}"${unpackDir ? ` -d "${path.addSlashes(unpackDir)}"` : ''}`
+                    zip: `unzip -o "${path.addSlashes(archive)}"${unpackDir ? ` -d "${path.addSlashes(unpackDir)}"` : ''}`,
+                    '7z': `7z x "${path.addSlashes(archive)}"${unpackDir ? ` -o"${path.addSlashes(unpackDir)}"` : ''}`
                 }[this.archive.type!];
 
                 if (unpackDir)
@@ -241,6 +239,9 @@ export default class Archive
         else if (path.substring(path.length - 7, path.length - 2) == '.tar.')
             return 'tar';
 
+        else if (path.substring(path.length - 3) == '.7z')
+            return '7z';
+
         else return null;
     }
 
@@ -255,20 +256,22 @@ export default class Archive
         const debugThread = new DebugThread('Archive.getInfo', `Getting info about archive: ${path}`);
 
         return new Promise(async (resolve) => {
-            let archive: ArchiveInfo = {
-                type: this.getType(path),
-                size: {
-                    compressed: null,
-                    uncompressed: null
-                },
-                files: []
-            };
+            const archiveType = this.getType(path);
 
-            if (archive.type === null)
+            if (archiveType === null)
                 resolve(null);
 
             else
             {
+                let archive: ArchiveInfo = {
+                    type: archiveType,
+                    size: {
+                        compressed: null,
+                        uncompressed: null
+                    },
+                    files: []
+                };
+
                 switch (archive.type)
                 {
                     case 'tar':
@@ -276,7 +279,7 @@ export default class Archive
 
                         for (const match of tarOutput.stdOut.matchAll(/^[dwxr\-]+ [\w/]+[ ]+(\d+) [0-9\-]+ [0-9\:]+ (.+)/gm))
                         {
-                            let fileSize = parseInt(match[1]);
+                            const fileSize = parseInt(match[1]);
 
                             archive.size.uncompressed! += fileSize;
 
@@ -296,8 +299,8 @@ export default class Archive
 
                         for (const match of zipOutput.stdOut.matchAll(/^(\d+)  [a-zA-Z\:]+[ ]+(\d+)[ ]+[0-9\-]+% [0-9\-]+ [0-9\:]+ [a-f0-9]{8}  (.+)/gm))
                         {
-                            let uncompressedSize = parseInt(match[1]),
-                                compressedSize = parseInt(match[2]);
+                            const uncompressedSize = parseInt(match[1]),
+                                    compressedSize = parseInt(match[2]);
 
                             archive.size.compressed!   += compressedSize;
                             archive.size.uncompressed! += uncompressedSize;
@@ -307,6 +310,27 @@ export default class Archive
                                 size: {
                                     compressed: compressedSize,
                                     uncompressed: uncompressedSize
+                                }
+                            });
+                        }
+
+                        break;
+
+                    case '7z':
+                        const output = (await Neutralino.os.execCommand(`7z l "${path}"`))
+                            .stdOut.split('-------------------').slice(1, -1).join('-------------------');
+
+                        for (const match of output.matchAll(/^[\d]+-[\d]+-[\d]+ [\d]+:[\d]+:[\d]+[a-zA-Z\. ]+([\d ]+)[ ]+([\d ]+)[ ]+(.+)/gm))
+                        {
+                            const fileSize = parseInt(match[1].trim());
+
+                            archive.size.uncompressed! += fileSize;
+
+                            archive.files.push({
+                                path: match[3],
+                                size: {
+                                    compressed: null,
+                                    uncompressed: fileSize
                                 }
                             });
                         }
