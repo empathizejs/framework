@@ -8,6 +8,11 @@ type WindowSize = {
     resizable?: boolean;
 }
 
+type WindowPosition = {
+    x: number;
+    y: number;
+}
+
 type WindowOptions = WindowSize & {
     title?: string;
     icon?: string;
@@ -125,6 +130,11 @@ interface Window
      * windows have incorrect sizes, you can (and by that I mean you should) provide them manually
      */
     center(width?: number, height?: number): Promise<void>;
+
+    /**
+     * Gets window position
+    */
+    getPosition(): Promise<WindowPosition>
 }
 
 declare const Neutralino;
